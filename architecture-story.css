@@ -25,7 +25,7 @@
   position:absolute;bottom:17px;display:flex;gap:1px;background:#1b1716e3;color:var(--paper);
   padding:3px;border-radius:4px;
 }
-.walk-angles a {display:grid;place-items:center;min-height:38px;padding:3px 17px;font-size:13px}
+.walk-angles a {display:grid;place-items:center;min-height:44px;padding:3px 17px;font-size:13px;touch-action:manipulation}
 .walk-angles a[aria-current] {background:var(--paper);color:var(--ink);border-radius:2px}
 .walk-notes {grid-area:notes;min-width:0}
 .walk-notes article {
@@ -66,23 +66,27 @@ body:has(#consultation[open]) {overflow:hidden}
   .story-preview .video-hero img {transform:none}
   .walk {
     grid-template-columns:minmax(0,1fr);grid-template-areas:"stack";
-    --film-height:clamp(165px,37svh,330px);
+    --film-height:clamp(180px,min(76vw,34svh),340px);
   }
-  .walk-film {grid-area:stack;top:70px;height:var(--film-height);z-index:1}
+  .walk-film {grid-area:stack;top:76px;height:var(--film-height);z-index:1}
   .walk-screen {width:100%}
-  .walk-angles {bottom:7px}
+  .walk-angles {bottom:10px;gap:4px}
+  .walk-angles a {min-width:76px;min-height:46px}
   .walk-notes {grid-area:stack}
   .walk-notes article {
-    min-height:72svh;padding:calc(var(--film-height) + 24px) 22px 22px;justify-content:center;
+    min-height:calc(var(--film-height) + 310px);padding:calc(var(--film-height) + 24px) 20px 28px;justify-content:center;
   }
   .walk-notes h2 {font-size:clamp(32px,8.2vw,48px);margin:4px 0 8px}
   .walk-notes dl {margin-top:10px}
-  .room-view {aspect-ratio:1.85}
+  .room-view {aspect-ratio:1.85;width:calc(100% + 28px);margin-inline:-14px;user-select:none}
+  .room-view #comparison {width:56px;height:56px;top:50%;left:clamp(28px,var(--cut),calc(100% - 28px))}
+  .room-view .compare.is-dragging #comparison {box-shadow:0 0 0 6px #edebde40}
   .renovation-study {padding:24px 14px}
   .renovation-heading {display:block}
   #compare-help {font-size:13px;margin-top:6px}
   .room-view .side {font-size:11px;bottom:7px}
-  .renovation-foot {gap:9px}
+  .renovation-foot {gap:10px;flex-wrap:wrap}
+  .renovation-foot span {flex:1;min-width:140px;line-height:1.8}
   #consultation {padding:18px}
 }
 @media(prefers-reduced-motion:reduce), (max-height:480px) {

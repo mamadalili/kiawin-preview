@@ -3,6 +3,10 @@ const menu = document.querySelector('#mobile-nav');
 const menuButton = document.querySelector('.menu-button');
 const compare = document.querySelector('.compare');
 const handle = document.querySelector('#comparison');
+let cut = 50;
+let comparisonDrag = null;
+let pendingCut = null;
+let comparisonFrame = 0;
 
 function showMenu(open) {
   menu.hidden = !open;
@@ -11,21 +15,44 @@ function showMenu(open) {
 }
 
 function setCut(value) {
-  const percent = Math.round(Math.min(100, Math.max(0, value)));
-  compare.style.setProperty('--cut', percent + '%');
+  cut = Math.min(100, Math.max(0, value));
+  const percent = Math.round(cut);
+  compare.style.setProperty('--cut', cut.toFixed(3) + '%');
   compare.querySelector('.old').hidden = percent < 4;
   compare.querySelector('.new').hidden = percent > 96;
   handle.setAttribute('aria-valuenow', String(percent));
   handle.setAttribute('aria-valuetext', percent.toLocaleString('fa-IR') + ' درصد قبل از تعویض');
 }
+function drawCut() {
+  comparisonFrame = 0;
+  if (pendingCut === null) return;
+  setCut(pendingCut);
+  pendingCut = null;
+}
 handle.addEventListener('pointerdown', event => {
-  if (event.isPrimary && event.button === 0) handle.setPointerCapture(event.pointerId);
+  if (!event.isPrimary || event.button !== 0) return;
+  comparisonDrag = {id: event.pointerId, x: event.clientX, cut, width: compare.getBoundingClientRect().width};
+  handle.setPointerCapture(event.pointerId);
+  compare.classList.add('is-dragging');
 });
-handle.addEventListener('pointermove', event => {
-  if (!handle.hasPointerCapture(event.pointerId)) return;
-  const bounds = compare.getBoundingClientRect();
-  setCut((event.clientX - bounds.left) / bounds.width * 100);
-});
+function moveComparison(event) {
+  if (!comparisonDrag || event.pointerId !== comparisonDrag.id) return;
+  pendingCut = comparisonDrag.cut + (event.clientX - comparisonDrag.x) / comparisonDrag.width * 100;
+  if (!comparisonFrame) comparisonFrame = requestAnimationFrame(drawCut);
+}
+function finishComparison(event) {
+  if (!comparisonDrag || event.pointerId !== comparisonDrag.id) return;
+  if (event.type === 'pointerup') moveComparison(event);
+  cancelAnimationFrame(comparisonFrame);
+  drawCut();
+  comparisonDrag = null;
+  compare.classList.remove('is-dragging');
+  if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+}
+handle.addEventListener('pointermove', moveComparison);
+handle.addEventListener('pointerup', finishComparison);
+handle.addEventListener('pointercancel', finishComparison);
+handle.addEventListener('lostpointercapture', finishComparison);
 handle.addEventListener('keydown', event => {
   const value = Number(handle.getAttribute('aria-valuenow'));
   const steps = {ArrowRight:value+1, ArrowLeft:value-1, ArrowUp:value+1, ArrowDown:value-1,
