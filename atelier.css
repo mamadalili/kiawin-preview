@@ -3,7 +3,8 @@
   border-radius:11px;color:var(--ink);background:rgba(250,249,244,.84);
   border-color:#ffffff9c;box-shadow:0 3px 18px #251d1010,inset 0 1px 0 #ffffff8c;
 }
-.header.docked {background:rgba(250,249,244,.95)}
+.header.docked {background:rgba(250,249,244,.95);box-shadow:0 5px 20px #251d101c,inset 0 1px 0 #ffffff8c}
+.header.menu-open {background:rgba(250,249,244,.98)}
 .header .brand img {filter:brightness(0);opacity:.92}
 .header #mobile-nav:not([hidden]) {background:#faf9f4;color:var(--ink);box-shadow:0 8px 22px #251d1024}
 .categories,.products {background:#f8f7f2}

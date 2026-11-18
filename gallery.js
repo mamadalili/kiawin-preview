@@ -1,6 +1,11 @@
 const header = document.querySelector('.header');
 const menu = document.querySelector('#mobile-nav');
 const menuButton = document.querySelector('.menu-button');
+const mobileHeader = matchMedia('(max-width:720px)');
+const menuReducedMotion = matchMedia('(prefers-reduced-motion:reduce)');
+let menuOpen = false;
+let menuAnimation = null;
+let headerFrame = 0;
 const compare = document.querySelector('.compare');
 const handle = document.querySelector('#comparison');
 let cut = 50;
@@ -9,9 +14,36 @@ let pendingCut = null;
 let comparisonFrame = 0;
 
 function showMenu(open) {
-  menu.hidden = !open;
+  open = open && mobileHeader.matches;
+  if (menuOpen === open) return;
+  const appearance = getComputedStyle(menu);
+  const from = menu.hidden ? {opacity:0,transform:'translateY(-8px)'}
+    : {opacity:appearance.opacity,transform:appearance.transform};
+  menuAnimation?.cancel();
+  menuAnimation = null;
+  menuOpen = open;
+  header.classList.toggle('menu-open', open);
   menuButton.setAttribute('aria-expanded', String(open));
   menuButton.setAttribute('aria-label', open ? 'بستن منو' : 'باز کردن منو');
+  if (!open && (menu.contains(document.activeElement) || (!mobileHeader.matches && document.activeElement === menuButton))) {
+    const target = mobileHeader.matches ? menuButton : header.querySelector('.brand');
+    target.focus({preventScroll:true});
+  }
+  menu.inert = !open;
+  if (menuReducedMotion.matches || !mobileHeader.matches) {
+    menu.hidden = !open;
+    return;
+  }
+  menu.hidden = false;
+  const animation = menu.animate([from, {opacity:open ? 1 : 0,transform:open ? 'translateY(0)' : 'translateY(-8px)'}],
+    {duration:open ? 240 : 170,easing:'cubic-bezier(.2,.7,.2,1)',fill:'both'});
+  menuAnimation = animation;
+  animation.finished.then(() => {
+    if (menuAnimation !== animation) return;
+    menu.hidden = !menuOpen;
+    animation.cancel();
+    menuAnimation = null;
+  }).catch(() => {});
 }
 
 function setCut(value) {
@@ -63,15 +95,32 @@ handle.addEventListener('keydown', event => {
   }
 });
 
-menu.addEventListener('click', event => { if (event.target.closest('a')) showMenu(false); });
-menuButton.addEventListener('click', () => showMenu(menu.hidden));
-document.addEventListener('click', event => { if (!header.contains(event.target)) showMenu(false); });
+header.addEventListener('click', event => { if (event.target.closest('a')) showMenu(false); });
+menuButton.addEventListener('click', () => showMenu(!menuOpen));
+document.addEventListener('pointerdown', event => { if (!header.contains(event.target)) showMenu(false); });
+document.addEventListener('focusin', event => { if (!header.contains(event.target)) showMenu(false); });
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && !menu.hidden) { showMenu(false); menuButton.focus(); }
+  if (event.key === 'Escape' && menuOpen) {
+    event.preventDefault();
+    showMenu(false);
+    menuButton.focus({preventScroll:true});
+  }
 });
-matchMedia('(max-width:720px)').addEventListener('change', () => showMenu(false));
-function dockHeader() { header.classList.toggle('docked', window.scrollY > 24); }
-window.addEventListener('scroll', dockHeader, {passive:true});
+mobileHeader.addEventListener('change', () => showMenu(false));
+menuReducedMotion.addEventListener('change', () => {
+  if (!menuReducedMotion.matches) return;
+  menuAnimation?.cancel();
+  menuAnimation = null;
+  menu.hidden = !menuOpen;
+});
+function dockHeader() {
+  headerFrame = 0;
+  if (scrollY > 40) header.classList.add('docked');
+  else if (scrollY < 12) header.classList.remove('docked');
+}
+window.addEventListener('scroll', () => {
+  if (!headerFrame) headerFrame = requestAnimationFrame(dockHeader);
+}, {passive:true});
 
 setCut(50);
 dockHeader();

@@ -14,9 +14,9 @@ button {border:0;background:transparent;cursor:pointer}
   height:62px;padding:0 18px;display:flex;align-items:center;gap:32px;color:var(--paper);
   border:1px solid #edebde69;border-radius:17px;background:#2c2724b5;
   backdrop-filter:blur(18px) saturate(125%);box-shadow:inset 0 1px 0 #ffffff24,0 8px 30px #10090720;
-  transition:top .25s,height .25s,background .25s
+  transition:transform .28s cubic-bezier(.2,.7,.2,1),background .25s,box-shadow .25s
 }
-.header.docked {top:8px;height:56px;background:#241f1de8}
+.header.docked {transform:translateY(-12px);background:#241f1de8}
 .brand img {display:block;width:auto;height:32px;filter:brightness(0) invert(.94)}
 .header nav {display:flex;gap:26px;align-items:center;font-size:14px}
 .header nav :is(button,a) {padding:8px 0}
@@ -75,11 +75,21 @@ button {border:0;background:transparent;cursor:pointer}
 .artwork > :not([hidden]),[data-story]:not([hidden]) {animation:reveal .35s both}
 @media(max-width:720px) {
   .header {top:12px;inset-inline:12px;height:58px;padding:0 12px;gap:10px}
+  .header.docked {transform:translateY(-4px)}
   .header nav {display:none}.brand img {height:30px}
   .menu-button {display:grid;align-content:center;justify-items:center;gap:5px;width:42px;height:42px}
-  .menu-button i {width:20px;height:2px;background:currentColor}
-  .header #mobile-nav:not([hidden]) {display:grid;gap:3px;position:absolute;top:calc(100% + 6px);inset-inline:0;background:#211b19fa;border-radius:12px;padding:12px 20px}
-  #mobile-nav > * {text-align:right}
+  .menu-button {border-radius:4px;touch-action:manipulation}
+  .menu-button i {width:20px;height:2px;background:currentColor;transition:transform .22s ease}
+  .menu-button[aria-expanded=true] i:first-child {transform:translateY(3.5px) rotate(45deg)}
+  .menu-button[aria-expanded=true] i:last-child {transform:translateY(-3.5px) rotate(-45deg)}
+  .header #mobile-nav:not([hidden]) {
+    display:grid;gap:4px;position:absolute;top:calc(100% + 8px);inset-inline:0;
+    background:#211b19fa;border:1px solid #d8d2c5;border-radius:11px;padding:8px;
+    max-height:calc(100dvh - 106px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    overflow-y:auto;overscroll-behavior-y:contain;
+  }
+  .header #mobile-nav > a {display:flex;align-items:center;min-height:48px;padding:10px 14px;text-align:right;border-radius:4px;touch-action:manipulation}
+  #mobile-nav > a:active {background:#e9e4d7;color:var(--wine)}
   .composition {height:auto;grid-template:"art" clamp(290px,49svh,485px) "caption" auto / minmax(0,1fr)}
   .caption {margin:0;padding:16px 20px 20px}
   .choices {margin:0 0 9px}
@@ -100,7 +110,7 @@ button {border:0;background:transparent;cursor:pointer}
 @media(max-width:720px) {
   .video-hero {height:clamp(280px,min(92vw,52svh),400px)}
   .video-hero img {object-position:53% 40%}
-  .header {top:max(12px,env(safe-area-inset-top));gap:8px}
+  .header {top:calc(12px + env(safe-area-inset-top));gap:8px}
   .header .brand {flex-shrink:0}
   .menu-button {width:44px;height:44px;flex-shrink:0}
   .action {min-height:44px}
