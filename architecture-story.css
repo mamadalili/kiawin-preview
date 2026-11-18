@@ -63,6 +63,7 @@ body:has(#consultation[open]) {overflow:hidden}
 .consult-options span {font-size:14px}.consult-options b {font-weight:600}
 .consult-address {display:inline-block;margin-top:15px;padding:5px 0;color:var(--wine);font-size:14px}
 @media(max-width:760px) {
+  .story-preview .video-hero img {transform:none}
   .walk {
     grid-template-columns:minmax(0,1fr);grid-template-areas:"stack";
     --film-height:clamp(165px,37svh,330px);
