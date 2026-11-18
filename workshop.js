@@ -33,6 +33,7 @@ function updateEnquiry() {
 
 function setOpen(open) {
   windowScene.dataset.open = String(open);
+  operateWindow.setAttribute('aria-pressed', String(open));
   operateWindow.textContent = open ? 'بستن پنجره' : 'باز کردن پنجره';
 }
 
