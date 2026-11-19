@@ -107,6 +107,12 @@
 .foot-grid .map-link {color:var(--paper)}
 .foot-baseline {display:flex;align-items:center;justify-content:space-between;gap:15px;border-top:1px solid #edebde33;padding-top:13px;margin-top:26px;color:#c6bcaf;font-size:13px}
 .site-foot a:hover,#ask-workshop:hover {color:white}
+@media(pointer:coarse) {
+  .header nav a,.foot-grid nav a,.foot-contact a,.foot-baseline a,#ask-workshop,.workshop-entry {
+    min-height:44px;display:flex;align-items:center;
+  }
+  .action,.mode-picker button,.opening-row button,.part-list button {min-height:44px}
+}
 @media(min-width:721px) and (max-width:960px){.header {gap:14px}.header nav {gap:14px}.foot-grid {grid-template-columns:1fr 1fr}}
 @media(max-width:720px){
   .categories {padding-bottom:18px}
