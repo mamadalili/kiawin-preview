@@ -7,12 +7,12 @@
   <title>کیاوین | گالری معماری و بازسازی پنجره</title>
   <link rel="stylesheet" href="style.css?v=17">
   <link rel="stylesheet" href="atelier.css?v=17">
-  <link rel="stylesheet" href="architecture-story.css?v=16">
+  <link rel="stylesheet" href="architecture-story.css?v=18">
   <script src="workshop.js?v=15" defer></script>
   <script src="products.js?v=11" defer></script>
   <script src="gallery.js?v=17" defer></script>
   <script src="architecture-story.js?v=16" defer></script>
-  <script src="consultation.js" defer></script>
+  <script src="consultation.js?v=18" defer></script>
 </head>
 <body id="top">
   <a class="skip" href="#categories">رفتن به دسته‌های محصولات</a>
@@ -299,14 +299,16 @@
     </section>
 
   </main>
-  <dialog id="consultation" aria-labelledby="consult-title">
+  <dialog id="consultation" aria-labelledby="consult-title" aria-describedby="consult-context">
     <div class="consult-head"><h2 id="consult-title">تماس با کیاوین</h2><form method="dialog"><button type="submit" autofocus>بستن</button></form></div>
-    <p id="consult-context"></p>
-    <div class="consult-options">
-      <a href="tel:+982126513030"><span>تماس با دفتر</span><b dir="ltr">۰۲۱ ۲۶۵۱ ۳۰۳۰</b></a>
-      <a id="consult-email" href="mailto:info@kiawinco.com"><span>نوشتن ایمیل</span><b lang="en" dir="ltr">info@kiawinco.com</b></a>
+    <div class="consult-body">
+      <p id="consult-context"></p>
+      <div class="consult-options">
+        <a href="tel:+982126513030"><span>تماس با دفتر</span><b dir="ltr">۰۲۱ ۲۶۵۱ ۳۰۳۰</b></a>
+        <a id="consult-email" href="mailto:info@kiawinco.com"><span>نوشتن ایمیل</span><b lang="en" dir="ltr">info@kiawinco.com</b></a>
+      </div>
+      <a class="consult-address" href="https://kiawinco.com/contact-us/">نشانی و اطلاعات دفتر کیاوین</a>
     </div>
-    <a class="consult-address" href="https://kiawinco.com/contact-us/">نشانی و اطلاعات دفتر کیاوین</a>
   </dialog>
   <footer class="site-foot" id="contact">
     <div class="foot-grid">

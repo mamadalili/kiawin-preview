@@ -2,7 +2,40 @@ const consultation = document.querySelector('#consultation');
 const consultTitle = document.querySelector('#consult-title');
 const consultContext = document.querySelector('#consult-context');
 const consultEmail = document.querySelector('#consult-email');
+const consultMotion = matchMedia('(prefers-reduced-motion:reduce)');
 let returnFocus;
+let consultAnimation = null;
+let closingConsultation = false;
+let backdropPress = false;
+
+function finishClosingConsultation() {
+  consultAnimation?.cancel();
+  consultAnimation = null;
+  closingConsultation = false;
+  backdropPress = false;
+  consultation.close();
+}
+
+function closeConsultation() {
+  if (!consultation.open || closingConsultation) return;
+  closingConsultation = true;
+  const appearance = getComputedStyle(consultation);
+  const from = {opacity:appearance.opacity,transform:appearance.transform};
+  consultAnimation?.cancel();
+  if (consultMotion.matches) {
+    finishClosingConsultation();
+    return;
+  }
+  consultAnimation = consultation.animate([from,{opacity:0,transform:'translateY(12px)'}],
+    {duration:160,easing:'ease-in',fill:'forwards'});
+  consultAnimation.finished.then(finishClosingConsultation).catch(() => {});
+}
+
+function outsideConsultation(event) {
+  const bounds = consultation.getBoundingClientRect();
+  return event.target === consultation && (event.clientX < bounds.left || event.clientX > bounds.right ||
+    event.clientY < bounds.top || event.clientY > bounds.bottom);
+}
 
 for (const link of document.querySelectorAll('[data-enquiry]')) {
   link.addEventListener('click', event => {
@@ -28,11 +61,37 @@ for (const link of document.querySelectorAll('[data-enquiry]')) {
     consultContext.textContent = text;
     consultEmail.href = email;
     consultation.showModal();
+    consultation.querySelector('.consult-body').scrollTop = 0;
+    if (!consultMotion.matches) {
+      consultAnimation = consultation.animate([{opacity:0,transform:'translateY(16px)'},{opacity:1,transform:'translateY(0)'}],
+        {duration:240,easing:'cubic-bezier(.2,.7,.2,1)'});
+    }
   });
 }
-consultation.addEventListener('click', event => {
-  const bounds = consultation.getBoundingClientRect();
-  if (event.target === consultation && (event.clientX < bounds.left || event.clientX > bounds.right ||
-    event.clientY < bounds.top || event.clientY > bounds.bottom)) consultation.close();
+consultation.querySelector('form').addEventListener('submit', event => {
+  event.preventDefault();
+  closeConsultation();
 });
-consultation.addEventListener('close', () => returnFocus?.focus({preventScroll:true}));
+consultation.addEventListener('cancel', event => {
+  event.preventDefault();
+  closeConsultation();
+});
+consultation.addEventListener('pointerdown', event => { backdropPress = outsideConsultation(event); });
+consultation.addEventListener('pointercancel', () => { backdropPress = false; });
+consultation.addEventListener('click', event => {
+  if (backdropPress && outsideConsultation(event)) closeConsultation();
+  backdropPress = false;
+});
+consultation.addEventListener('close', () => {
+  if (consultation.open) return;
+  consultAnimation?.cancel();
+  consultAnimation = null;
+  closingConsultation = false;
+  backdropPress = false;
+  returnFocus?.focus({preventScroll:true});
+});
+consultMotion.addEventListener('change', () => {
+  if (!consultMotion.matches) return;
+  consultAnimation?.cancel();
+  if (closingConsultation) finishClosingConsultation();
+});

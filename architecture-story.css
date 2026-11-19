@@ -50,18 +50,29 @@
 .renovation-foot {margin-top:12px;align-items:center}
 .renovation-foot span {font-size:12px;color:#575047}
 .workshop-entry {font-size:12px;color:var(--wine);padding:9px 0}
-#consultation {width:min(440px,calc(100% - 32px));max-height:85svh;border:1px solid #c9c1b2;border-radius:8px;padding:24px;background:#f9f7f1;color:var(--ink);font:inherit;box-shadow:0 18px 75px #2117103b}
+#consultation {width:min(440px,calc(100% - 24px));max-width:none;max-height:calc(100dvh - 32px);border:1px solid #c9c1b2;border-radius:8px;padding:0;overflow:hidden;background:#f9f7f1;color:var(--ink);font:inherit;box-shadow:0 18px 75px #2117103b}
+#consultation[open] {display:grid;grid-template-rows:auto minmax(0,1fr)}
 #consultation::backdrop {background:#1b171680}
-body:has(#consultation[open]) {overflow:hidden}
-.consult-head {display:flex;align-items:center;justify-content:space-between;gap:16px}
-.consult-head h2 {margin:0;font-size:24px;line-height:1.45}
-.consult-head button {min-height:42px;padding:5px 12px;color:#5f554d;font-size:14px}
-#consult-context {font-size:15px;line-height:1.9;margin:12px 0 18px}
+html:has(#consultation[open]),body:has(#consultation[open]) {overflow:hidden}
+.consult-head {display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px 6px}
+.consult-head h2 {margin:0;font-size:clamp(20px,5vw,24px);line-height:1.5}
+.consult-head form {flex-shrink:0}
+.consult-head button {min-width:48px;min-height:48px;padding:6px;color:#5f554d;font-size:14px;touch-action:manipulation}
+.consult-body {min-height:0;overflow-y:auto;overscroll-behavior-y:contain;padding:0 18px 16px}
+#consult-context {font-size:15px;line-height:1.9;margin:8px 0 18px}
 .consult-options {display:grid;gap:8px}
-.consult-options a {display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:7px 14px;min-height:49px;padding:9px 12px;border:1px solid #d6cec2;border-radius:4px}
+.consult-options a {display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:7px 14px;min-height:56px;padding:12px;border:1px solid #d6cec2;border-radius:4px;touch-action:manipulation}
 .consult-options a:hover {border-color:var(--wine)}
-.consult-options span {font-size:14px}.consult-options b {font-weight:600}
-.consult-address {display:inline-block;margin-top:15px;padding:5px 0;color:var(--wine);font-size:14px}
+.consult-options span {font-size:14px}.consult-options b {font-weight:600;overflow-wrap:anywhere}
+.consult-address {display:flex;align-items:center;min-height:48px;margin-top:12px;padding:8px 0;color:var(--wine);font-size:14px;touch-action:manipulation}
+.consult-body a:focus-visible {outline-offset:-3px}
+@media(max-width:600px) {
+  #consultation {inset:auto 0 calc(12px + env(safe-area-inset-bottom));margin:0 auto;max-height:calc(100dvh - 32px - env(safe-area-inset-bottom) - env(safe-area-inset-top))}
+}
+@media(max-width:380px) {
+  .consult-options a {display:grid;gap:4px}
+  .consult-options b {justify-self:start}
+}
 @media(max-width:760px) {
   .story-preview .video-hero img {transform:none}
   .walk {
@@ -87,7 +98,6 @@ body:has(#consultation[open]) {overflow:hidden}
   .room-view .side {font-size:11px;bottom:7px}
   .renovation-foot {gap:10px;flex-wrap:wrap}
   .renovation-foot span {flex:1;min-width:140px;line-height:1.8}
-  #consultation {padding:18px}
 }
 @media(prefers-reduced-motion:reduce), (max-height:480px) {
   .story-preview .video-hero img {transform:none}
